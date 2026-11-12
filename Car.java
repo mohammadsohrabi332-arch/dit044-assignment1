@@ -50,11 +50,13 @@ public abstract class Car implements Movable {
     public void stopEngine() {
         currentSpeed = 0;
     }
+    // MOMO: Increases speed but ensures it never exceeds enginePower.
     private void incrementSpeed(double amount) {
-        currentSpeed = ¢getCurrentSpeed() + speedFactor() * amount; //TODO SpeedFactor
+        currentSpeed = Math.min(getCurrentSpeed() + speedFactor() * amount, enginePower);
     }
+    // MOMO: Decreases speed but ensures it never drops below 0.
     private void decrementSpeed(double amount) {
-        currentSpeed = getCurrentSpeed() - speedFactor() * amount; //TODO SpeedFactor
+        currentSpeed = Math.max(getCurrentSpeed() - speedFactor() * amount, 0);
     }
 
     // JOUD: Increases speed. Only accepts amounts in [0,1];
@@ -127,38 +129,3 @@ public abstract class Car implements Movable {
     }
 }
 
-
-//Saab
-//  public double speedFactor() {
-//        double turbo = 1;
-//        if(turboOn) turbo = 1.3;
-//        return enginePower * 0.01 * turbo;
-
-//Volvo
-//  public double speedFactor() {
-//        return enginePower * 0.01 * trimFactor;
-//    }
-
-//VOLVO
-// TODO fix this method according to lab pm
-//    public void gas(double amount) {
-//        incrementSpeed(amount);
-//    }
-
-// TODO fix this method according to lab pm
-//    public void brake(double amount) {
-//        decrementSpeed(amount);
-//    }
-//}
-
-//SAAB
-// TODO fix this method according to assignment pm
-//    public void gas(double amount) {
-//        incrementSpeed(amount);
-//    }
-
-// TODO fix this method according to assignment pm
-//    public void brake(double amount) {
-//        decrementSpeed(amount);
-//    }
-//}

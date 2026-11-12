@@ -199,7 +199,7 @@ public class CarTest {
         reportResult("Brake rejects amount above 1", rejected);
     }
 
-    /* JOUD: Tests that gas() throws an exception for a negative amount;
+    /* JOUD: Tests that brake() throws an exception for a negative amount;
         since braking with a negative amount would increase speed.*/
         private static void testBrakeRejectsNegative() {
             Volvo240 volvo = new Volvo240();
@@ -244,6 +244,53 @@ public class CarTest {
     }
 
 
+    private static void testGasDoesNotDecreaseSpeed() {
+        Car[] cars = {new Volvo240(), new Saab95()};
+        boolean result = true;
+        for (Car car : cars) {
+            car.startEngine();
+            for (int i = 0; i < 200; i++) {
+                double speedBefore = car.getCurrentSpeed();
+                car.gas(1);
+                result = result && car.getCurrentSpeed() >= speedBefore
+                        && car.getCurrentSpeed() <= car.getEnginePower();
+            }
+        }
+        reportResult("Gas never decreases speed on either car", result);
+    }
+
+    private static void testBrakeDoesNotIncreaseSpeed() {
+        Car[] cars = {new Volvo240(), new Saab95()};
+        boolean result = true;
+        for (Car car : cars) {
+            car.startEngine();
+            for (int i = 0; i < 200; i++) {
+                car.gas(1);
+            }
+            for (int i = 0; i < 200; i++) {
+                double speedBefore = car.getCurrentSpeed();
+                car.brake(1);
+                result = result && car.getCurrentSpeed() <= speedBefore
+                        && car.getCurrentSpeed() >= 0;
+            }
+        }
+        reportResult("Brake never increases speed on either car", result);
+    }
+
+    private static void testZeroPedalAmount() {
+        Car[] cars = {new Volvo240(), new Saab95()};
+        boolean result = true;
+        for (Car car : cars) {
+            car.startEngine();
+            double speedBefore = car.getCurrentSpeed();
+            car.gas(0);
+            result = result && closeTo(car.getCurrentSpeed(), speedBefore);
+            car.brake(0);
+            result = result && closeTo(car.getCurrentSpeed(), speedBefore);
+        }
+        reportResult("Zero gas and brake leave speed unchanged on either car", result);
+    }
+
     static void main() {
         testTurbo();
         testStartEngine();
@@ -258,11 +305,14 @@ public class CarTest {
         testMoveLeft();
         testFullRotation();
         testStoppedCarDoesNotMove();
-        testGasRejectsTooLarge();  // JOUD: Task 4: sanity checks for brake().
+        testGasRejectsTooLarge();  // JOUD: Task 4: sanity checks for gas().
         testBrakeRejectsNegative(); // JOUD: Task 4: sanity checks for brake().
         testBrakeRejectsTooLarge(); // JOUD: Task 4: sanity checks for brake().
         testSpeedDoesNotDropBelowZero(); // MOMO: Task 4: sanity checks for minimum speed.
         testSpeedDoesNotExceedEnginePower(); // MOMO: Task 4: sanity checks for maximum speed.
         testGasRejectsNegative(); // MOMO: Task 4: sanity check for gas():
+        testGasDoesNotDecreaseSpeed();
+        testBrakeDoesNotIncreaseSpeed();
+        testZeroPedalAmount();
     }
 }
